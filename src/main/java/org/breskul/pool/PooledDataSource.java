@@ -1,5 +1,6 @@
 package org.breskul.pool;
 
+import com.google.common.annotations.VisibleForTesting;
 import lombok.extern.slf4j.Slf4j;
 import org.breskul.exception.BoboException;
 
@@ -19,7 +20,6 @@ import static org.breskul.util.Constants.*;
  * It is initialized once the @{{@link PooledDataSource#getInstance()}}
  * or @{{@link PooledDataSource#getInstance(String, String, String, int)}} is called and always returning the same instance for the following calls.
  * Uses @{{@link Queue}} data structure in order to provide a pool of connections and can be used as a driver-agnostic.
- *
  */
 @Slf4j
 public class PooledDataSource extends BaseDataSource {
@@ -66,7 +66,8 @@ public class PooledDataSource extends BaseDataSource {
         }
     }
 
-    private PooledDataSource(String url, String username, String password) {
+    @VisibleForTesting
+    PooledDataSource(String url, String username, String password) {
         log.trace("Creating instance of {} with default pool size: {}", getClass().getSimpleName(), DEFAULT_POOL_SIZE);
         checkArguments(url, username, password, DEFAULT_POOL_SIZE);
         this.connectionPool = new ConcurrentLinkedQueue<>();
