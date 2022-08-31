@@ -30,7 +30,7 @@ public class TestBasicAnnotation {
         assertTrue(annotationTableIsPresent);
         var valueIsEmpty = StudentBreskulTeam.class.getDeclaredAnnotation(Table.class).value();
         assertEquals(valueIsEmpty, "");
-        final var nameToLowerSnakeCase = lowerSnakeCase(StudentBreskulTeam.class.getSimpleName());
+        final var nameToLowerSnakeCase = camelToSnake(StudentBreskulTeam.class.getSimpleName());
         assertEquals(nameToLowerSnakeCase, "student_breskul_team");
     }
 
@@ -80,19 +80,8 @@ public class TestBasicAnnotation {
     }
 
 
-    private String lowerSnakeCase(final String tableName) {
-        var lowerSnakeCase = new StringBuilder();
-        var toCharArray = tableName.toCharArray();
-        for (int i = 0; i < toCharArray.length; i++) {
-            if (i == 0)
-                lowerSnakeCase.append(Character.toLowerCase(toCharArray[i]));
-            else if (Character.toLowerCase(toCharArray[i]) != toCharArray[i])
-                lowerSnakeCase.append("_").append(Character.toLowerCase(toCharArray[i]));
-            else
-                lowerSnakeCase.append(toCharArray[i]);
-        }
-
-        return lowerSnakeCase.toString();
+    private String camelToSnake(String camelString) {
+        return camelString.replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2").replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
     }
 }
 
