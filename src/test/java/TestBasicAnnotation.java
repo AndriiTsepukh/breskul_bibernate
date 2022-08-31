@@ -4,7 +4,7 @@ import entity.StudentBreskulTeam;
 import org.breskul.connectivity.annotation.Column;
 import org.breskul.connectivity.annotation.Id;
 import org.breskul.connectivity.annotation.Table;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
