@@ -1,8 +1,8 @@
 package classfortest;
 
-import org.breskul.connectivity.annotation.Entity;
+import org.breskul.connectivity.annotation.Table;
 
-@Entity
+@Table
 public class StudentBreskulTeam {
 
 }
