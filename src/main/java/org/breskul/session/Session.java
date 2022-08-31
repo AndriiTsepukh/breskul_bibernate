@@ -12,6 +12,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.*;
 
+import static org.breskul.util.StringUtils.camelToSnake;
+
 @Data
 public class Session {
 
@@ -22,7 +24,7 @@ public class Session {
 
     public Session(DataSource dataSource) {
         this.dataSource = dataSource;
-        Properties properties = new PropertyResolver("application.db.properties").getProperties();
+        final var properties = new PropertyResolver("application.db.properties").getProperties();
         sqlSelect = properties.getProperty("sql_select");
     }
 
@@ -31,6 +33,7 @@ public class Session {
     public <T> T find(final Class<T> classType, final Object id) {
         Objects.requireNonNull(classType);
         Objects.requireNonNull(id);
+
         final var entityKeyForObject = new EntityKey<>(classType, id);
         if (entityList.containsKey(entityKeyForObject))
             return classType.cast(entityList.get(entityKeyForObject));
@@ -39,36 +42,53 @@ public class Session {
         final var sql = createSql(classType);
         var preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setObject(1, id);
-        ResultSet resultSet = preparedStatement.executeQuery();
+        final var resultSet = preparedStatement.executeQuery();
         final var obj = createObj(entityKeyForObject, resultSet);
         entityList.put(entityKeyForObject, obj);
         connection.close();
         return obj;
 }
 
-    private <T> String createSql(Class<T> aClass) {
-        String value = aClass.getDeclaredAnnotation(Table.class).value();
+    private <T> String createSql(final Class<T> aClass) {
+        var value = getTableName(aClass);
         return String.format(sqlSelect, value);
     }
 
-    public <T> T createObj(EntityKey<T> entityKey, ResultSet resultSet) throws InvocationTargetException, InstantiationException, IllegalAccessException, SQLException, NoSuchMethodException {
+    @SneakyThrows
+    public <T> T createObj(final EntityKey<T> entityKey, final ResultSet resultSet)  {
         resultSet.next();
-        Class<T> entity = entityKey.type();
-        Object entityObj = entity.getConstructor().newInstance();
-        Field[] declaredFields = Arrays.stream(entity.getDeclaredFields())
+        final var entity = entityKey.type();
+        final var entityObj = entity.getConstructor().newInstance();
+        final var declaredFields = Arrays.stream(entity.getDeclaredFields())
                 .sorted(Comparator.comparing(Field::getName))
                 .toArray(Field[]::new);
-        Object[] arr = new Object[declaredFields.length];
 
         for (int i = 0; i < declaredFields.length; i++) {
-            Field field = declaredFields[i];
-            String declaredAnnotation = field.getDeclaredAnnotation(Column.class).name();
+            final var field = declaredFields[i];
+            final var fieldName = getFieldName(field);
             field.setAccessible(true);
-            Object fieldValue = resultSet.getObject(declaredAnnotation);
+            final var fieldValue = resultSet.getObject(fieldName);
             field.set(entityObj, fieldValue);
-            arr[i] = fieldValue;
         }
 
         return entity.cast(entityObj);
+    }
+
+
+    private String getFieldName(final Field field) {
+
+        if (field.isAnnotationPresent(Column.class))
+            return field.getDeclaredAnnotation(Column.class).name();
+        else
+            return camelToSnake(field.getName());
+    }
+
+    private <T> String getTableName(final Class<T> aClass) {
+
+        var value = aClass.getDeclaredAnnotation(Table.class).value();
+        if (value.equals("")) {
+            return camelToSnake(aClass.getSimpleName());
+        }
+        return value;
     }
 }
