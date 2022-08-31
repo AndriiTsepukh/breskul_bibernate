@@ -1,6 +1,6 @@
 
-import classfortest.Person;
-import classfortest.StudentBreskulTeam;
+import entity.Person;
+import entity.StudentBreskulTeam;
 import org.breskul.connectivity.annotation.Column;
 import org.breskul.connectivity.annotation.Id;
 import org.breskul.connectivity.annotation.Table;

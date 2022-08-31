@@ -1,4 +1,4 @@
-package classfortest;
+package entity;
 
 import org.breskul.connectivity.annotation.Column;
 import org.breskul.connectivity.annotation.Id;
