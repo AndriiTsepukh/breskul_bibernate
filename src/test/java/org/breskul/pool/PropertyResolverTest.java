@@ -34,7 +34,7 @@ public class PropertyResolverTest {
         Properties properties = propertyResolver.getProperties();
 
         assertNotNull(properties);
-        assertEquals(properties.get(USERNAME), "postgres");
+        assertEquals(properties.get(USERNAME), "sa");
     }
 
 
