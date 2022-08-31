@@ -2,7 +2,6 @@
 import classfortest.Person;
 import classfortest.StudentBreskulTeam;
 import org.breskul.connectivity.annotation.Column;
-import org.breskul.connectivity.annotation.Entity;
 import org.breskul.connectivity.annotation.Id;
 import org.breskul.connectivity.annotation.Table;
 import org.junit.Test;
@@ -11,28 +10,28 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Objects;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class TestBasicAnnotation {
 
     @Test
     public void existAnnotationTable() {
 
-        final var annotationEntityIsPresent = Person.class.isAnnotationPresent(Entity.class);
-        assert (annotationEntityIsPresent);
         final var annotationTableIsPresent = Person.class.isAnnotationPresent(Table.class);
-        assert (annotationTableIsPresent);
+        assertTrue(annotationTableIsPresent);
         final var tableName = Person.class.getDeclaredAnnotation(Table.class).value();
-        assert (tableName.equals("persons"));
+        assertEquals(tableName, "persons");
     }
 
     @Test
     public void emptyAnnotationTable() {
 
-        final var annotationEntityIsPresent = StudentBreskulTeam.class.isAnnotationPresent(Entity.class);
-        assert (annotationEntityIsPresent);
         final var annotationTableIsPresent = StudentBreskulTeam.class.isAnnotationPresent(Table.class);
-        assert (!annotationTableIsPresent);
+        assertTrue(annotationTableIsPresent);
+        var valueIsEmpty = StudentBreskulTeam.class.getDeclaredAnnotation(Table.class).value();
+        assertEquals(valueIsEmpty, "");
         final var nameToLowerSnakeCase = lowerSnakeCase(StudentBreskulTeam.class.getSimpleName());
-        assert (nameToLowerSnakeCase.equals("student_breskul_team"));
+        assertEquals(nameToLowerSnakeCase, "student_breskul_team");
     }
 
     @Test
@@ -45,7 +44,7 @@ public class TestBasicAnnotation {
                 .map(columnValue -> columnValue.getDeclaredAnnotation(Column.class).name())
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
-        assert (personName.equals("person_name"));
+        assertEquals(personName, "person_name");
 
         final var checkIgnoreDirty = Arrays.stream(Person.class.getDeclaredFields())
                 .filter(field -> field.getName().equals("surname") && field.isAnnotationPresent(Column.class))
@@ -54,7 +53,7 @@ public class TestBasicAnnotation {
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
 
-        assert (checkIgnoreDirty);
+        assertTrue(checkIgnoreDirty);
     }
 
     @Test
@@ -64,7 +63,7 @@ public class TestBasicAnnotation {
                 .findFirst()
                 .orElse(null);
 
-        assert (Objects.isNull(field1));
+        assertTrue(Objects.isNull(field1));
     }
 
     @Test
@@ -76,7 +75,7 @@ public class TestBasicAnnotation {
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
 
-        assert (Objects.nonNull(personName));
+        assertTrue(Objects.nonNull(personName));
 
     }
 
