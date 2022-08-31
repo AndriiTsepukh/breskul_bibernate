@@ -11,8 +11,13 @@ import org.breskul.pool.PooledDataSource;
 public class SessionFactory {
 
     private PooledDataSource dataSource;
+    private boolean showSql = false;
+
+    public SessionFactory(PooledDataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     public Session createSession() {
-        return new Session(dataSource);
+        return new Session(dataSource, showSql);
     }
 }
