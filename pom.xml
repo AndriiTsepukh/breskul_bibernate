@@ -117,6 +117,7 @@
                         <configuration>
                             <srcFiles>
                                 <srcFile>./src/test/resources/drop-schema.sql</srcFile>
+                                <srcFile>./src/test/resources/shutdown-db.sql</srcFile>
                             </srcFiles>
                         </configuration>
                     </execution>
