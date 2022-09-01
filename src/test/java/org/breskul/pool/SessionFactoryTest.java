@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class SessionFactoryTests {
+public class SessionFactoryTest {
 
     private static final String url = "jdbc:h2:file:./target/db/testdb";
     private static final String username = "sa";
