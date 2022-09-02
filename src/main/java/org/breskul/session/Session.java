@@ -9,6 +9,7 @@ import org.breskul.exception.ErrorWithEnyColumn;
 import org.breskul.exception.TableNameNotCorrect;
 import org.breskul.pool.PropertyResolver;
 import org.h2.jdbc.JdbcSQLNonTransientException;
+import org.h2.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
@@ -102,7 +103,7 @@ public class Session {
     private <T> String getTableName(final Class<T> aClass) {
 
         var value = aClass.getDeclaredAnnotation(Table.class).value();
-        if (value.equals("")) {
+        if (StringUtils.isWhitespaceOrEmpty(value)) {
             return camelToSnake(aClass.getSimpleName());
         }
         return value;
