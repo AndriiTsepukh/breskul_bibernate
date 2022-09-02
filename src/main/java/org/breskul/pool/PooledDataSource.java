@@ -53,6 +53,10 @@ public class PooledDataSource extends BaseDataSource {
         return connectionPool.poll();
     }
 
+    public int checkConnectionPoolSize() {
+        return connectionPool.size();
+    }
+
     @Override
     public Connection getConnection(String username, String password) {
         return this.getConnection();
