@@ -1,7 +1,9 @@
 package org.breskul.pool;
 
 
+import entity.Person;
 import org.breskul.exception.TableNameNotCorrect;
+import org.breskul.model.SettingsForSession;
 import org.breskul.session.SessionFactory;
 import org.breskul.sessionfactory.entity.Products;
 import org.breskul.sessionfactory.entity.Student;
@@ -73,9 +75,9 @@ public class SessionFactoryTest {
 
     @Test
     public void elementNotFound() {
-
+        var settingsForSession = new SettingsForSession(true, true);
         final var pooledDataSource =  PooledDataSource.getInstance(url, username, password, DEFAULT_POOL_SIZE);
-        final var sessionFactory = new SessionFactory(pooledDataSource, true);
+        final var sessionFactory = new SessionFactory(pooledDataSource, settingsForSession);
         final var session = sessionFactory.createSession();
         final var student = session.find(Student.class, 3);
         final var connectionSizeAfterFirstConnection = pooledDataSource.checkConnectionPoolSize();
@@ -96,5 +98,50 @@ public class SessionFactoryTest {
         }
         final var connectionSizeAfterFirstConnection = pooledDataSource.checkConnectionPoolSize();
         assertEquals(connectionSizeAfterFirstConnection, DEFAULT_POOL_SIZE);
+    }
+
+    @Test
+    public void dirtyCheckerSave() {
+
+        final var pooledDataSource =  PooledDataSource.getInstance(url, username, password, DEFAULT_POOL_SIZE);
+        final var sessionFactory = new SessionFactory(pooledDataSource);
+        final var session = sessionFactory.createSession();
+        var student = session.find(Student.class, 1);
+        student.setName("Test");
+        session.close();
+        var studentAfterDirtyCheck = session.find(Student.class, 1);
+
+        assertEquals("Test", studentAfterDirtyCheck.getName());
+    }
+
+    @Test
+    public void dirtyCheckerSaveWithOffDirtyCheck() {
+
+        final var pooledDataSource =  PooledDataSource.getInstance(url, username, password, DEFAULT_POOL_SIZE);
+        final var sessionFactory = new SessionFactory(pooledDataSource);
+        final var session = sessionFactory.createSessionWithProperties(SettingsForSession.createSettingsWithOffDirtyChecker());
+        var student = session.find(Student.class, 1);
+        student.setName("Mihail");
+        session.close();
+        var studentAfterDirtyCheck = session.find(Student.class, 1);
+
+        assertEquals("Test", studentAfterDirtyCheck.getName());
+    }
+
+
+    @Test
+    public void dirtyCheckerSaveWithOffDirtyCheckColumn() {
+
+        final var pooledDataSource =  PooledDataSource.getInstance(url, username, password, DEFAULT_POOL_SIZE);
+        final var sessionFactory = new SessionFactory(pooledDataSource);
+        final var session = sessionFactory.createSession();
+        var person = session.find(Person.class, 1);
+        person.setSurname("Testovich");
+        person.setName("Elon");
+        session.close();
+        var personAfterDirtyCheck = session.find(Person.class, 1);
+
+        assertNotEquals("Testovich", personAfterDirtyCheck.getSurname());
+        assertEquals("Elon", personAfterDirtyCheck.getName());
     }
 }
