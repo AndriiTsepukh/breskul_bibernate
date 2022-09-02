@@ -46,9 +46,8 @@ public class PooledDataSourceTest {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
-                int price = resultSet.getInt("price");
 
-                System.out.printf("Product with: id=%d, name=%s, price=%d\r\n", id, name, price);
+                System.out.printf("Product with: id=%d, name=%s\r\n", id, name);
 
             }
         } catch (SQLException e) {
