@@ -1,15 +1,11 @@
-package org.breskul.sessionfactory.entity;
+package org.breskul.testdata.entity;
 
-import lombok.Data;
 import org.breskul.connectivity.annotation.Id;
 import org.breskul.connectivity.annotation.Table;
 
 @Table
-@Data
-public class Student {
-
+public class TableNotFound {
     @Id
     private Long id;
     private String name;
-    private String secondName;
 }

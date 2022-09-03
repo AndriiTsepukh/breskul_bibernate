@@ -1,5 +1,7 @@
-package org.breskul.pool;
+package org.breskul.tests;
 
+import org.breskul.pool.PooledDataSource;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +17,10 @@ public class PooledDataSourceTest {
     private static final String username = "postgres";
     private static final String password = "Abcd1234";
 
+    @BeforeEach
+    public void setup() {
+        PooledDataSource.reset();
+    }
 
     // TODO: modify and extend tests
 

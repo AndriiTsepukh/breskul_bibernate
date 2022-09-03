@@ -1,16 +1,23 @@
-package org.breskul.pool;
+package org.breskul.tests;
 
 import org.breskul.exception.BoboException;
+import org.breskul.pool.PooledDataSource;
+import org.breskul.pool.PropertyResolver;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
-import static org.breskul.util.Constants.*;
+import static org.breskul.testdata.entity.util.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PropertyResolverTest {
 
+    @BeforeEach
+    public void setup() {
+        PooledDataSource.reset();
+    }
 
     @Test
     @DisplayName("Read default file when name is not specified")

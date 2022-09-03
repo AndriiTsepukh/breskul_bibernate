@@ -1,4 +1,4 @@
-package org.breskul.sessionfactory.entity;
+package org.breskul.testdata.entity;
 
 import lombok.Data;
 import lombok.ToString;

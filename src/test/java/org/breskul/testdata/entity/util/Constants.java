@@ -1,4 +1,4 @@
-package org.breskul.util;
+package org.breskul.testdata.entity.util;
 
 public enum Constants {
     ;

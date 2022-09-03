@@ -1,9 +1,12 @@
+package org.breskul.tests;
 
-import entity.Person;
-import entity.StudentBreskulTeam;
+import org.breskul.pool.PooledDataSource;
+import org.breskul.testdata.entity.Person;
+import org.breskul.testdata.entity.StudentBreskulTeam;
 import org.breskul.connectivity.annotation.Column;
 import org.breskul.connectivity.annotation.Id;
 import org.breskul.connectivity.annotation.Table;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -12,11 +15,14 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestBasicAnnotation {
+public class BasicAnnotationTest {
 
+    @BeforeEach
+    public void setup() {
+        PooledDataSource.reset();
+    }
     @Test
-    public void existAnnotationTable() {
-
+    public void existAnnotationTableTest() {
         final var annotationTableIsPresent = Person.class.isAnnotationPresent(Table.class);
         assertTrue(annotationTableIsPresent);
         final var tableName = Person.class.getDeclaredAnnotation(Table.class).value();
@@ -24,8 +30,7 @@ public class TestBasicAnnotation {
     }
 
     @Test
-    public void emptyAnnotationTable() {
-
+    public void emptyAnnotationTableTest() {
         final var annotationTableIsPresent = StudentBreskulTeam.class.isAnnotationPresent(Table.class);
         assertTrue(annotationTableIsPresent);
         var valueIsEmpty = StudentBreskulTeam.class.getDeclaredAnnotation(Table.class).value();
@@ -35,9 +40,7 @@ public class TestBasicAnnotation {
     }
 
     @Test
-    public void existAnnotationColumn() {
-
-
+    public void existAnnotationColumnTest() {
         final var personName = Arrays.stream(Person.class.getDeclaredFields())
                 .filter(field -> field.getName().equals("name") && field.isAnnotationPresent(Column.class))
                 .peek(field -> field.setAccessible(true))
@@ -57,7 +60,7 @@ public class TestBasicAnnotation {
     }
 
     @Test
-    public void emptyAnnotationId() {
+    public void emptyAnnotationIdTest() {
         Field field1 = Arrays.stream(StudentBreskulTeam.class.getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(Id.class))
                 .findFirst()
@@ -67,18 +70,14 @@ public class TestBasicAnnotation {
     }
 
     @Test
-    public void existAnnotationId() {
-
-
+    public void existAnnotationIdTest() {
         final var personName = Arrays.stream(Person.class.getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(Id.class))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
 
         assertTrue(Objects.nonNull(personName));
-
     }
-
 
     private String camelToSnake(String camelString) {
         return camelString.replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2").replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();

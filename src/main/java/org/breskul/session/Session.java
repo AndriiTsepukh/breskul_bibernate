@@ -3,8 +3,12 @@ package org.breskul.session;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.breskul.actions.Action;
+import org.breskul.actions.DeleteAction;
+import org.breskul.actions.InsertAction;
 import org.breskul.connectivity.annotation.Column;
 import org.breskul.connectivity.annotation.Table;
+import org.breskul.exception.BoboException;
 import org.breskul.exception.ErrorWithEnyColumn;
 import org.breskul.exception.TableNameNotCorrect;
 import org.breskul.pool.PropertyResolver;
@@ -29,12 +33,20 @@ public class Session {
     private final HashMap<EntityKey<?>, Object> entityList = new HashMap<>();
     private boolean showSql;
 
+    Connection connection;
+
+    Queue<Action> actionQueue = new LinkedList<>();
 
     public Session(DataSource dataSource, boolean showSql) {
         this.dataSource = dataSource;
         final var properties = new PropertyResolver("application.db.properties").getProperties();
         sqlSelect = properties.getProperty("sql_select");
         this.showSql = showSql;
+        try {
+            connection = dataSource.getConnection();
+        } catch (SQLException e) {
+            throw new BoboException("Error during getting Session: " + e.getMessage());
+        }
     }
 
     @SneakyThrows
@@ -57,13 +69,29 @@ public class Session {
                 entityList.put(entityKeyForObject, obj);
                 return obj;
             } catch (SQLSyntaxErrorException exception) {
-                log.error("Table {} dose not exist ", getTableName(classType));
+                log.error("Table {} does not exist ", getTableName(classType));
                 throw new TableNameNotCorrect(TABLE_NAME_ERROR);
             } catch (JdbcSQLNonTransientException e){
                 log.error("Object with id {} not found ", id);
                 return null;
             }
+        } finally {
+            connection.close();
         }
+    }
+
+    public void persist(Object entity) {
+        //        TODO add create or update depends on ID availability
+        actionQueue.add(new InsertAction(connection, entity));
+
+    }
+
+    public void remove(Object entity) {
+        actionQueue.add(new DeleteAction(connection, entity));
+    }
+
+    public void flush() {
+        actionQueue.stream().forEach(Action::execute);
     }
 
     private <T> String createSql(final Class<T> aClass) {
@@ -110,6 +138,11 @@ public class Session {
     }
 
     public void close() {
-
+        flush();
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
