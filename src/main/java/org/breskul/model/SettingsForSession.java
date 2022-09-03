@@ -12,17 +12,41 @@ public class SettingsForSession {
     private boolean showSql = true;
     private boolean enableDirtyChecker = true;
 
-
-    public static SettingsForSession createSettingsWithOffDirtyChecker() {
-        return new SettingsForSession(true, false);
+    public SettingsForSession( SettingsForSessionBuilder settingsForSessionBuilder) {
+        this.showSql = settingsForSessionBuilder.showSql;
+        this.enableDirtyChecker = settingsForSessionBuilder.enableDirtyChecker;
     }
 
-    public static SettingsForSession createSettingsWithOffDirtyCheckerAndOffShowSql() {
-        return new SettingsForSession(false, false);
-    }
+    public static class SettingsForSessionBuilder {
+        private boolean showSql;
+        private boolean enableDirtyChecker;
 
-    public static SettingsForSession createSettingsWithOffShowSql() {
-        return new SettingsForSession(false, true);
-    }
+        private SettingsForSessionBuilder() {
+        }
 
+        public static SettingsForSessionBuilder aSettingsForSession() {
+            return new SettingsForSessionBuilder();
+        }
+
+        public SettingsForSessionBuilder withShowSql(boolean showSql) {
+            this.showSql = showSql;
+            return this;
+        }
+
+        public SettingsForSessionBuilder withEnableDirtyChecker(boolean enableDirtyChecker) {
+            this.enableDirtyChecker = enableDirtyChecker;
+            return this;
+        }
+
+        public SettingsForSessionBuilder but() {
+            return aSettingsForSession().withShowSql(showSql).withEnableDirtyChecker(enableDirtyChecker);
+        }
+
+        public SettingsForSession build() {
+            SettingsForSession settingsForSession = new SettingsForSession();
+            settingsForSession.setShowSql(showSql);
+            settingsForSession.setEnableDirtyChecker(enableDirtyChecker);
+            return settingsForSession;
+        }
+    }
 }

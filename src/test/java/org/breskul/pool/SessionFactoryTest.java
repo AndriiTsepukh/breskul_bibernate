@@ -119,7 +119,11 @@ public class SessionFactoryTest {
 
         final var pooledDataSource =  PooledDataSource.getInstance(url, username, password, DEFAULT_POOL_SIZE);
         final var sessionFactory = new SessionFactory(pooledDataSource);
-        final var session = sessionFactory.createSessionWithProperties(SettingsForSession.createSettingsWithOffDirtyChecker());
+        final var session = sessionFactory.createSessionWithProperties(SettingsForSession.SettingsForSessionBuilder
+                .aSettingsForSession()
+                .withEnableDirtyChecker(false)
+                .build());
+
         var student = session.find(Student.class, 1);
         student.setName("Mihail");
         session.close();
