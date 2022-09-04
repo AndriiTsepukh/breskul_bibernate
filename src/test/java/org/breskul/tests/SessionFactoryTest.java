@@ -4,10 +4,7 @@ package org.breskul.tests;
 import org.breskul.exception.TableNameNotCorrect;
 import org.breskul.pool.PooledDataSource;
 import org.breskul.session.SessionFactory;
-import org.breskul.testdata.entity.EntityToTestDelete;
-import org.breskul.testdata.entity.Products;
-import org.breskul.testdata.entity.Student;
-import org.breskul.testdata.entity.TableNotFound;
+import org.breskul.testdata.entity.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -102,7 +99,7 @@ public class SessionFactoryTest {
     }
 
     @Test
-    public void persistActionTest() {
+    public void deleteActionTest() {
         final var pooledDataSource =  PooledDataSource.getInstance(url, username, password, DEFAULT_POOL_SIZE);
         final var sessionFactory = new SessionFactory(pooledDataSource);
         final var session = sessionFactory.createSession();
@@ -115,5 +112,26 @@ public class SessionFactoryTest {
         assertNull(deletedStudent);
         final var existingStudent = session.find(Student.class, 1);
         assertNotNull(existingStudent);
+    }
+
+    @Test
+    public void persistActionTest() {
+        final var pooledDataSource =  PooledDataSource.getInstance(url, username, password, DEFAULT_POOL_SIZE);
+        final var sessionFactory = new SessionFactory(pooledDataSource);
+        final var session = sessionFactory.createSession();
+
+        TestEntity testEntity = new TestEntity();
+        testEntity.firstName = "TestFirstName";
+        testEntity.lastName = "TestLastName";
+
+        session.persist(testEntity);
+        session.flush();
+
+        var id = testEntity.id;
+
+        var foundEntity = session.find(TestEntity.class, id);
+
+        assertEquals("TestFirstName", foundEntity.firstName);
+        assertEquals("TestLastName", foundEntity.lastName);
     }
 }

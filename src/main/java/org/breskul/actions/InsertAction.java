@@ -74,10 +74,9 @@ public class InsertAction implements Action {
                 throw new BoboException("INSERT operation failed. Number of affected rows: 0");
             }
             var keys = preparedStatement.getGeneratedKeys();
-            int id;
+            Long id;
             if (keys.next()) {
-                id = keys.getInt(1);
-                System.out.println("assigned key: " + id);
+                id = keys.getLong(1);
             } else {
                 throw new BoboException("INSERT operation failed. No id obtained.");
             }

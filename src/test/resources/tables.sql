@@ -34,3 +34,10 @@ VALUES (1, 'Test1', 'User1');
 
 INSERT INTO table_delete_test
 VALUES (2, 'Test2', 'User2');
+
+CREATE TABLE table_test
+(
+    id   LONG NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(255),
+    last_name VARCHAR(255)
+);
