@@ -22,6 +22,17 @@ CREATE TABLE student
 INSERT INTO student
 VALUES (1, 'Miha', 'Beheka');
 
+CREATE TABLE persons
+(
+    id   bigint primary key ,
+    person_name VARCHAR(255),
+    person_surname VARCHAR(255)
+);
+
+INSERT INTO persons
+VALUES (1, 'Miha', 'Beheka');
+
+
 CREATE TABLE table_delete_test
 (
     id   LONG primary key ,

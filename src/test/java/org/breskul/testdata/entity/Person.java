@@ -1,10 +1,12 @@
 package org.breskul.testdata.entity;
 
+import lombok.Data;
 import org.breskul.connectivity.annotation.Column;
 import org.breskul.connectivity.annotation.Id;
 import org.breskul.connectivity.annotation.Table;
 
 @Table("persons")
+@Data
 public class Person {
 
     @Id
