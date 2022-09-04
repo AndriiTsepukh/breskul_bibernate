@@ -1,7 +1,5 @@
 package org.breskul.tests;
 
-
-import entity.Person;
 import org.breskul.exception.TableNameNotCorrect;
 import org.breskul.pool.PooledDataSource;
 import org.breskul.model.SettingsForSession;
@@ -9,8 +7,6 @@ import org.breskul.session.SessionFactory;
 import org.breskul.testdata.entity.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import javax.sql.DataSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
