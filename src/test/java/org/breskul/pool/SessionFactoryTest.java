@@ -38,7 +38,19 @@ public class SessionFactoryTest {
         final var session = sessionFactory.createSession();
         final var products = session.find(Products.class, 1);
         final var productsSecond = session.find(Products.class, 1);
-        assertEquals(products, productsSecond);
+        assertTrue(products == productsSecond);
+    }
+
+    @Test
+    public void checkCashAfterCloseSession() {
+
+        final var pooledDataSource = new PooledDataSource(url, username, password);
+        final var sessionFactory = new SessionFactory(pooledDataSource);
+        var session = sessionFactory.createSession();
+        final var products = session.find(Products.class, 1);
+        session = sessionFactory.createSession();
+        var productsSecond = session.find(Products.class, 1);
+        assertTrue(products != productsSecond);
     }
 
     @Test
