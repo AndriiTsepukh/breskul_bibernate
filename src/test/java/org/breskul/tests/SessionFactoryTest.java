@@ -45,7 +45,7 @@ public class SessionFactoryTest {
     @Test
     public void checkCashAfterCloseSession() {
 
-        final var pooledDataSource = new PooledDataSource(url, username, password);
+        final var pooledDataSource = PooledDataSource.getInstance(url, username, password, 5);
         final var sessionFactory = new SessionFactory(pooledDataSource);
         var session = sessionFactory.createSession();
         final var products = session.find(Products.class, 1);
