@@ -7,8 +7,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DeleteAction implements Action {
-    Connection connection;
-    Object object;
+    private Connection connection;
+    private Object object;
     public DeleteAction(Connection connection, Object object) {
         this.connection = connection;
         this.object = object;
@@ -16,9 +16,9 @@ public class DeleteAction implements Action {
 
     @Override
     public void execute() {
-        String tableName = AnnotationsHelper.getTableName(object);
+        String tableName = AnnotationsHelper.getTableName(object.getClass());
         Long id = AnnotationsHelper.getId(object);
-        String idColumnName = AnnotationsHelper.getIdColumnName(object);
+        String idColumnName = AnnotationsHelper.getIdColumnName(object.getClass());
 
         try {
             var preparedStatement = connection.prepareStatement("DELETE FROM " + tableName +" WHERE " + idColumnName + " = ?");

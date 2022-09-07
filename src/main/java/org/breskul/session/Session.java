@@ -35,9 +35,9 @@ public class Session {
     private SettingsForSession settingsForSession;
     private final SqlHelper sqlFields;
 
-    Connection connection;
+    private Connection connection;
 
-    Queue<Action> actionQueue = new LinkedList<>();
+    private Queue<Action> actionQueue = new LinkedList<>();
 
 
     public Session(DataSource dataSource, SettingsForSession settingsForSession) {

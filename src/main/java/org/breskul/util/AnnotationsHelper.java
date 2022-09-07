@@ -10,31 +10,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class AnnotationsHelper {
-    public static String getTableName(Object object) {
-        checkIfTableAnnotationPresent(object);
-        String tableName = object.getClass().getAnnotation(Table.class).value();
-        if (tableName.isBlank()) tableName = object.getClass().getSimpleName().toLowerCase();
+    public static String getTableName(Class<?> clazz) {
+        checkIfTableAnnotationPresent(clazz);
+        String tableName = clazz.getAnnotation(Table.class).value();
+        if (tableName.isBlank()) tableName = clazz.getSimpleName().toLowerCase();
         return tableName;
     }
 
-    private static void checkIfTableAnnotationPresent(Object object) {
-        if (!object.getClass().isAnnotationPresent(Table.class)) {
+    private static void checkIfTableAnnotationPresent(Class<?> clazz) {
+        if (!clazz.isAnnotationPresent(Table.class)) {
             throw new BoboException("Annotation @Table is not present in correspondent class: "
-                    + object.getClass().getSimpleName());
+                    + clazz.getSimpleName());
         }
     }
 
     public static Long getId(Object object) {
-        checkIfTableAnnotationPresent(object);
+        checkIfTableAnnotationPresent(object.getClass());
         var fields = object.getClass().getFields();
-        List<Field> annotatedFieldsById = new ArrayList<>();
-        for (Field field : fields) {
-            if (field.isAnnotationPresent(Id.class)) {
-                annotatedFieldsById.add(field);
-            }
-        }
+        var annotatedFieldsById = Stream.of(fields)
+                .filter(field -> field.isAnnotationPresent(Id.class)).toList();
         if (annotatedFieldsById.size() == 0) throw new BoboException("@Id annotation not found for class: " + object.getClass().getSimpleName());
         if (annotatedFieldsById.size() > 1) throw new BoboException("@Id annotation found on more than 1 field for class: " + object.getClass().getSimpleName());
         var idField = annotatedFieldsById.get(0);
@@ -46,34 +43,34 @@ public class AnnotationsHelper {
         }
     }
 
-    public static String getIdColumnName(Object object) {
-        checkIfTableAnnotationPresent(object);
-        var fields = object.getClass().getFields();
+    public static String getIdColumnName(Class<?> clazz) {
+        checkIfTableAnnotationPresent(clazz);
+        var fields = clazz.getFields();
         List<Field> annotatedFieldsById = new ArrayList<>();
         for (Field field : fields) {
             if (field.isAnnotationPresent(Id.class)) {
                 annotatedFieldsById.add(field);
             }
         }
-        if (annotatedFieldsById.size() == 0) throw new BoboException("@Id annotation not found for class: " + object.getClass().getSimpleName());
-        if (annotatedFieldsById.size() > 1) throw new BoboException("@Id annotation found on more than 1 field for class: " + object.getClass().getSimpleName());
+        if (annotatedFieldsById.size() == 0) throw new BoboException("@Id annotation not found for class: " + clazz.getSimpleName());
+        if (annotatedFieldsById.size() > 1) throw new BoboException("@Id annotation found on more than 1 field for class: " + clazz.getSimpleName());
         var idField = annotatedFieldsById.get(0);
         var idFieldName = idField.getAnnotation(Id.class).value();
         if (idFieldName.isBlank()) idFieldName = idField.getName().toLowerCase();
         return idFieldName;
     }
 
-    public static Field getIdColumn(Object object) {
-        checkIfTableAnnotationPresent(object);
-        var fields = object.getClass().getFields();
+    public static Field getIdColumn(Class<?> clazz) {
+        checkIfTableAnnotationPresent(clazz);
+        var fields = clazz.getFields();
         List<Field> annotatedFieldsById = new ArrayList<>();
         for (Field field : fields) {
             if (field.isAnnotationPresent(Id.class)) {
                 annotatedFieldsById.add(field);
             }
         }
-        if (annotatedFieldsById.size() == 0) throw new BoboException("@Id annotation not found for class: " + object.getClass().getSimpleName());
-        if (annotatedFieldsById.size() > 1) throw new BoboException("@Id annotation found on more than 1 field for class: " + object.getClass().getSimpleName());
+        if (annotatedFieldsById.size() == 0) throw new BoboException("@Id annotation not found for class: " + clazz.getSimpleName());
+        if (annotatedFieldsById.size() > 1) throw new BoboException("@Id annotation found on more than 1 field for class: " + clazz.getSimpleName());
         return annotatedFieldsById.get(0);
     }
 
