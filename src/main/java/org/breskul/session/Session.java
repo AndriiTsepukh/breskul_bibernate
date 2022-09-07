@@ -3,9 +3,13 @@ package org.breskul.session;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.breskul.actions.Action;
+import org.breskul.actions.DeleteAction;
+import org.breskul.actions.InsertAction;
 import org.breskul.connectivity.annotation.Column;
 import org.breskul.connectivity.annotation.Id;
 import org.breskul.connectivity.annotation.Table;
+import org.breskul.exception.BoboException;
 import org.breskul.exception.TableNameNotCorrect;
 import org.breskul.model.SettingsForSession;
 import org.breskul.model.SqlHelper;
@@ -31,12 +35,20 @@ public class Session {
     private SettingsForSession settingsForSession;
     private final SqlHelper sqlFields;
 
+    private Connection connection;
+
+    private Queue<Action> actionQueue = new LinkedList<>();
 
 
     public Session(DataSource dataSource, SettingsForSession settingsForSession) {
         this.dataSource = dataSource;
         this.settingsForSession = settingsForSession;
         this.sqlFields = new SqlHelper("application.db.properties");
+        try {
+            connection = dataSource.getConnection();
+        } catch (SQLException e) {
+            throw new BoboException("Error during getting Session: " + e.getMessage());
+        }
     }
 
     @SneakyThrows
@@ -63,7 +75,23 @@ public class Session {
                 log.error("Object with id {} not found ", id);
                 return null;
             }
+        } finally {
+            connection.close();
         }
+    }
+
+    public void persist(Object entity) {
+        //        TODO add create or update depends on ID availability
+        actionQueue.add(new InsertAction(connection, entity));
+
+    }
+
+    public void remove(Object entity) {
+        actionQueue.add(new DeleteAction(connection, entity));
+    }
+
+    public void flush() {
+        actionQueue.stream().forEach(Action::execute);
     }
 
     private <T> String createSql(final Class<T> aClass) {
@@ -188,12 +216,18 @@ public class Session {
 
 
     public void close() {
+        flush();
         if (settingsForSession.isEnableDirtyChecker()) {
             entityList.entrySet().stream()
                     .filter(this::checkChange)
                     .forEach(this::updateEntity);
         }
         sessionClear();
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void log(final String message, final boolean showSql) {

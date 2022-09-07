@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 public @interface Column {
 
-    String name();
+    String name() default "";
 
     boolean ignoreDirtyCheck() default false;
 }

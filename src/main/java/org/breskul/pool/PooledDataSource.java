@@ -131,4 +131,9 @@ public class PooledDataSource extends BaseDataSource {
         return new PooledDataSource(url, username, password, poolSize);
     }
 
+//    Method for unit tests purpose only!
+    public static void reset() {
+        singletonInstance = null;
+    }
+
 }

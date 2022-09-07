@@ -1,4 +1,4 @@
-package entity;
+package org.breskul.testdata.entity;
 
 import org.breskul.connectivity.annotation.Table;
 

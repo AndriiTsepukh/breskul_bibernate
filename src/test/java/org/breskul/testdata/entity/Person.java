@@ -1,4 +1,4 @@
-package entity;
+package org.breskul.testdata.entity;
 
 import lombok.Data;
 import org.breskul.connectivity.annotation.Column;
