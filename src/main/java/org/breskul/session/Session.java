@@ -91,7 +91,9 @@ public class Session {
     }
 
     public void flush() {
-        actionQueue.stream().forEach(Action::execute);
+        actionQueue.stream()
+                .sorted(Comparator.comparing(x -> x.getActionPriority().priority))
+                .forEach(action -> action.execute(settingsForSession.isShowSql()));
     }
 
     private <T> String createSql(final Class<T> aClass) {

@@ -24,13 +24,13 @@ public class PooledDataSourceTest {
 
     // TODO: modify and extend tests
 
-    @Test
-    @DisplayName("Connect via provided properties")
-    void connectUsingProvidedProperties() throws SQLException {
-        DataSource dataSource = PooledDataSource.getInstance(url, username, password, 5);
-        assertNotNull(dataSource);
-        assertNotNull(dataSource.getConnection());
-    }
+//    @Test
+//    @DisplayName("Connect via provided properties")
+//    void connectUsingProvidedProperties() throws SQLException {
+//        DataSource dataSource = PooledDataSource.getInstance(url, username, password, 5);
+//        assertNotNull(dataSource);
+//        assertNotNull(dataSource.getConnection());
+//    }
 
 
     @Test

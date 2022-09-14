@@ -89,7 +89,7 @@ public class SessionFactoryTest {
         final var pooledDataSource =  PooledDataSource.getInstance(url, username, password, DEFAULT_POOL_SIZE);
         final var sessionFactory = new SessionFactory(pooledDataSource, settingsForSession);
         final var session = sessionFactory.createSession();
-        final var student = session.find(Student.class, 3);
+        final var student = session.find(Student.class, 333);
         final var connectionSizeAfterFirstConnection = pooledDataSource.checkConnectionPoolSize();
         assertNull(student);
         assertEquals(DEFAULT_POOL_SIZE, connectionSizeAfterFirstConnection);
@@ -107,22 +107,6 @@ public class SessionFactoryTest {
         }
         final var connectionSizeAfterFirstConnection = pooledDataSource.checkConnectionPoolSize();
         assertEquals(DEFAULT_POOL_SIZE, connectionSizeAfterFirstConnection);
-    }
-
-    @Test
-    public void deleteActionTest() {
-        final var pooledDataSource =  PooledDataSource.getInstance(url, username, password, DEFAULT_POOL_SIZE);
-        final var sessionFactory = new SessionFactory(pooledDataSource);
-        final var session = sessionFactory.createSession();
-
-        EntityToTestDelete entityToTestDelete = new EntityToTestDelete();
-        entityToTestDelete.id = 2L;
-        session.remove(entityToTestDelete);
-        session.flush();
-        final var deletedStudent = session.find(Student.class, 2);
-        assertNull(deletedStudent);
-        final var existingStudent = session.find(Student.class, 1);
-        assertNotNull(existingStudent);
     }
 
     @Test
@@ -194,4 +178,50 @@ public class SessionFactoryTest {
         assertNotEquals("Testovich", personAfterDirtyCheck.getSurname());
         assertEquals("Elon", personAfterDirtyCheck.getName());
     }
+
+    @Test
+    public void deleteActionTest() {
+        final var pooledDataSource =  PooledDataSource.getInstance(url, username, password, DEFAULT_POOL_SIZE);
+        final var sessionFactory = new SessionFactory(pooledDataSource);
+        final var session = sessionFactory.createSession();
+
+        Student student = new Student();
+        student.setId(2L);
+        session.remove(student);
+        session.flush();
+        final var deletedStudent = session.find(Student.class, 2);
+        assertNull(deletedStudent);
+        final var existingStudent = session.find(Student.class, 1);
+        assertNotNull(existingStudent);
+    }
+
+
+    @Test
+    public void check() {
+
+        final var pooledDataSource = PooledDataSource.getInstance(url, username, password, DEFAULT_POOL_SIZE);
+        final var sessionFactory = new SessionFactory(pooledDataSource);
+        final var session = sessionFactory.createSession();
+
+        session.remove(findStudent(3L));
+        session.remove(findStudent(4L));
+        session.remove(findStudent(5L));
+        session.remove(findStudent(6L));
+        session.remove(findStudent(7L));
+
+        var studentSecond = new Student();
+        studentSecond.setSecondName("Gomenyuk");
+        studentSecond.setName("Gleb");
+        session.persist(studentSecond);
+
+        session.flush();
+    }
+
+
+    Student findStudent(Long id) {
+        var student = new Student();
+        student.setId(id);
+        return student;
+    }
+
 }

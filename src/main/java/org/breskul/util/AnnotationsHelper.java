@@ -5,6 +5,7 @@ import org.breskul.connectivity.annotation.Id;
 import org.breskul.connectivity.annotation.Table;
 import org.breskul.exception.BoboException;
 
+import javax.swing.text.Utilities;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +30,7 @@ public class AnnotationsHelper {
 
     public static Long getId(Object object) {
         checkIfTableAnnotationPresent(object.getClass());
-        var fields = object.getClass().getFields();
+        var fields = object.getClass().getDeclaredFields();
         var annotatedFieldsById = Stream.of(fields)
                 .filter(field -> field.isAnnotationPresent(Id.class)).toList();
         if (annotatedFieldsById.size() == 0) throw new BoboException("@Id annotation not found for class: " + object.getClass().getSimpleName());
@@ -45,7 +46,7 @@ public class AnnotationsHelper {
 
     public static String getIdColumnName(Class<?> clazz) {
         checkIfTableAnnotationPresent(clazz);
-        var fields = clazz.getFields();
+        var fields = clazz.getDeclaredFields();
         List<Field> annotatedFieldsById = new ArrayList<>();
         for (Field field : fields) {
             if (field.isAnnotationPresent(Id.class)) {
@@ -62,7 +63,7 @@ public class AnnotationsHelper {
 
     public static Field getIdColumn(Class<?> clazz) {
         checkIfTableAnnotationPresent(clazz);
-        var fields = clazz.getFields();
+        var fields = clazz.getDeclaredFields();
         List<Field> annotatedFieldsById = new ArrayList<>();
         for (Field field : fields) {
             if (field.isAnnotationPresent(Id.class)) {
@@ -76,7 +77,7 @@ public class AnnotationsHelper {
 
     public static Map<String, Object> getColumns(Object object){
         Map<String, Object> resultMap = new HashMap<>();
-        var fields = object.getClass().getFields();
+        var fields = object.getClass().getDeclaredFields();
         for (Field field : fields) {
             if (field.isAnnotationPresent(Column.class)) {
                 var columnName = field.getAnnotation(Column.class).name();
@@ -84,6 +85,16 @@ public class AnnotationsHelper {
                 field.setAccessible(true);
                 try {
                     resultMap.put(columnName, field.get(object));
+                } catch (IllegalAccessException e) {
+                    throw new BoboException(e.getMessage());
+                }
+            } else {
+                field.setAccessible(true);
+                var columnName = StringUtils.camelToSnake(field.getName());
+                try {
+                    if(!field.isAnnotationPresent(Id.class)) {
+                        resultMap.put(columnName, field.get(object));
+                    }
                 } catch (IllegalAccessException e) {
                     throw new BoboException(e.getMessage());
                 }

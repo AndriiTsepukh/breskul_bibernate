@@ -1,5 +1,6 @@
 package org.breskul.actions;
 
+import lombok.extern.slf4j.Slf4j;
 import org.breskul.exception.BoboException;
 import org.breskul.util.AnnotationsHelper;
 
@@ -9,6 +10,7 @@ import java.sql.Statement;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class InsertAction implements Action {
     private Connection connection;
     private Object object;
@@ -19,14 +21,15 @@ public class InsertAction implements Action {
     }
 
     @Override
-    public void execute() {
+    public void execute(boolean showSql) {
         String tableName = AnnotationsHelper.getTableName(object.getClass());
         var columns = AnnotationsHelper.getColumns(object);
         String columnNames = String.join(",", columns.keySet());
         String valuesPlaceholders = columns.keySet().stream().map(v -> "?").collect(Collectors.joining(","));
         try {
-            var preparedStatement = connection.prepareStatement("INSERT INTO " + tableName
-                    + " (" + columnNames +") VALUES (" + valuesPlaceholders  + ")", Statement.RETURN_GENERATED_KEYS);
+            var sqlInsert = "INSERT INTO " + tableName + " (" + columnNames + ") VALUES (" + valuesPlaceholders  + ")";
+            var preparedStatement = connection.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS);
+            log(sqlInsert, showSql);
             int i=1;
             for (Map.Entry<String, Object> entry: columns.entrySet()){
                 preparedStatement.setObject(i, entry.getValue());
@@ -56,5 +59,15 @@ public class InsertAction implements Action {
             }
             throw new BoboException(e.getMessage());
         }
+    }
+
+    @Override
+    public ActionPriority getActionPriority() {
+        return ActionPriority.INSERT;
+    }
+
+    private void log(final String message, final boolean showSql) {
+        if (showSql)
+            log.info(message);
     }
 }
