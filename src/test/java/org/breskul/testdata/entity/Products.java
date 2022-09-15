@@ -1,16 +1,15 @@
 package org.breskul.testdata.entity;
 
 import lombok.Data;
-import lombok.ToString;
-import org.breskul.connectivity.annotation.Column;
-import org.breskul.connectivity.annotation.Table;
-
-import java.util.Date;
+import org.breskul.annotation.Column;
+import org.breskul.annotation.Id;
+import org.breskul.annotation.Table;
 
 @Table("products")
 @Data
 public class Products {
 
+    @Id
     @Column(name = "id")
     private Integer id;
 

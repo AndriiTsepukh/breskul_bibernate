@@ -1,4 +1,4 @@
-package org.breskul.connectivity.annotation;
+package org.breskul.annotation;
 
 import java.lang.annotation.*;
 

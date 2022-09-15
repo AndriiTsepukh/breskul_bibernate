@@ -1,8 +1,8 @@
 package org.breskul.testdata.entity;
 
 import lombok.Data;
-import org.breskul.connectivity.annotation.Id;
-import org.breskul.connectivity.annotation.Table;
+import org.breskul.annotation.Id;
+import org.breskul.annotation.Table;
 
 @Table
 @Data
