@@ -41,7 +41,7 @@ public class DeleteAction implements Action {
     }
 
     @Override
-    public int priority() {
-        return 3;
+    public ActionPriority priority() {
+        return ActionPriority.DELETE_PRIORITY;
     }
 }
