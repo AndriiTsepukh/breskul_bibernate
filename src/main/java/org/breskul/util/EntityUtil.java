@@ -22,7 +22,7 @@ public class EntityUtil {
         return Optional.ofNullable(entityType.getAnnotation(Table.class))
                 .map(Table::value)
                 .filter(Predicate.not(String::isEmpty))
-                .orElseGet(() -> entityType.getSimpleName().replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2").replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase());
+                .orElseGet(() -> StringUtils.camelToSnake(entityType.getSimpleName()));
     }
 
     public static <T> String getIdFieldName(Class<T> entityType) {
@@ -48,7 +48,7 @@ public class EntityUtil {
         return Optional.ofNullable(field.getAnnotation(Column.class))
                 .map(Column::name)
                 .filter(Predicate.not(String::isEmpty))
-                .orElseGet(() ->  field.getName().replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2").replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase());
+                .orElseGet(() ->  StringUtils.camelToSnake(field.getName()));
     }
 
     public static Object[] entityToSnapshot(Object entity) {

@@ -1,9 +1,8 @@
 package org.breskul.tests;
 
 import org.breskul.exception.BoboException;
-import org.breskul.exception.TableNameNotCorrect;
-import org.breskul.pool.PooledDataSource;
 import org.breskul.model.SettingsForSession;
+import org.breskul.pool.PooledDataSource;
 import org.breskul.session.SessionFactory;
 import org.breskul.testdata.entity.*;
 import org.junit.jupiter.api.BeforeEach;
