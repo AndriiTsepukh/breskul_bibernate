@@ -73,3 +73,11 @@ CREATE TABLE table_test
     first_name VARCHAR(255),
     last_name VARCHAR(255)
 );
+
+CREATE TABLE location
+(
+    id   LONG NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    address VARCHAR(255),
+    rooms_qty INT,
+    price LONG
+);
