@@ -14,13 +14,34 @@ VALUES (2, 'Beer');
 
 CREATE TABLE student
 (
-    id   bigint primary key ,
+    id   LONG NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     second_name VARCHAR(255)
 );
 
-INSERT INTO student
-VALUES (1, 'Miha', 'Beheka');
+INSERT INTO student (name, second_name)
+VALUES ('Miha', 'Beheka');
+
+INSERT INTO student (name, second_name)
+VALUES ('Gleb', 'Gomenyuk');
+
+INSERT INTO student (name, second_name)
+VALUES ('Alexander', 'Kharchenko');
+
+INSERT INTO student (name, second_name)
+VALUES ('Andrii', 'Tsepukh');
+
+INSERT INTO student (name, second_name)
+VALUES ('Vanya', 'Kulyk');
+
+INSERT INTO student (name, second_name)
+VALUES ('Vladislav', 'Solopov');
+
+INSERT INTO student (name, second_name)
+VALUES ('Volodymyr', 'Holichenko');
+
+INSERT INTO student (name, second_name)
+VALUES ('Станислав', 'Хижняк');
 
 CREATE TABLE persons
 (

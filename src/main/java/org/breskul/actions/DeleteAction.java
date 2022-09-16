@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+
 @AllArgsConstructor
 public class DeleteAction implements Action {
     private DataSource dataSource;
@@ -19,17 +20,18 @@ public class DeleteAction implements Action {
     private SettingsForSession settings;
 
     @Override
-    public void execute() {
-        String tableName = EntityUtil.readTableName(entity.getClass());
+    public void execute(boolean showSql) {
+        String tableName = AnnotationsHelper.getTableName(entity.getClass());
         Long id = AnnotationsHelper.getId(entity);
         String idColumnName = AnnotationsHelper.getIdColumnName(entity.getClass());
 
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = dataSource.getConnection()){
             String deleteQuery = String.format(SqlUtil.DELETE_QUERY_TEMPLATE, tableName, idColumnName);
             LogQueryUtil.log(deleteQuery, settings);
 
             try (var preparedStatement = connection.prepareStatement(deleteQuery)) {
                 preparedStatement.setLong(1, id);
+                preparedStatement.execute();
                 connection.commit();
             } catch (SQLException e) {
                 connection.rollback();
@@ -38,6 +40,11 @@ public class DeleteAction implements Action {
         } catch (SQLException e) {
             throw new BoboException("Failed to execute DeleteAction", e);
         }
+    }
+
+    @Override
+    public ActionPriority getActionPriority() {
+        return ActionPriority.DELETE;
     }
 
     @Override

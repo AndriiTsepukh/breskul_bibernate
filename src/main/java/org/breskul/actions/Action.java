@@ -1,7 +1,7 @@
 package org.breskul.actions;
 
 public interface Action {
-    void execute();
+    public void execute(boolean showSql);
 
-    ActionPriority priority();
+    public ActionPriority getActionPriority();
 }
