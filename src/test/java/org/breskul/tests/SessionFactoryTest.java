@@ -1,8 +1,8 @@
 package org.breskul.tests;
 
-import org.breskul.exception.TableNameNotCorrect;
-import org.breskul.pool.PooledDataSource;
+import org.breskul.exception.BoboException;
 import org.breskul.model.SettingsForSession;
+import org.breskul.pool.PooledDataSource;
 import org.breskul.session.SessionFactory;
 import org.breskul.testdata.entity.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -100,13 +100,7 @@ public class SessionFactoryTest {
         final var pooledDataSource =  PooledDataSource.getInstance(url, username, password, DEFAULT_POOL_SIZE);
         final var sessionFactory = new SessionFactory(pooledDataSource);
         final var session = sessionFactory.createSession();
-        try {
-            session.find(TableNotFound.class, 3);
-        } catch (TableNameNotCorrect e) {
-
-        }
-        final var connectionSizeAfterFirstConnection = pooledDataSource.checkConnectionPoolSize();
-        assertEquals(DEFAULT_POOL_SIZE, connectionSizeAfterFirstConnection);
+        assertThrows(BoboException.class, () -> session.find(TableNotFound.class, 3));
     }
 
     @Test
@@ -165,9 +159,8 @@ public class SessionFactoryTest {
 
         final var pooledDataSource =  PooledDataSource.getInstance(url, username, password, DEFAULT_POOL_SIZE);
         final var sessionFactory = new SessionFactory(pooledDataSource);
-        final var session = sessionFactory.createSessionWithProperties(SettingsForSession.SettingsForSessionBuilder
-                .aSettingsForSession()
-                .withEnableDirtyChecker(false)
+        final var session = sessionFactory.createSessionWithProperties(SettingsForSession.builder()
+                .enableDirtyChecker(false)
                 .build());
 
         var student = session.find(Student.class, 1);

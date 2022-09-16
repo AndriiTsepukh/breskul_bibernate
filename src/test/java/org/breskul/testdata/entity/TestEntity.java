@@ -1,8 +1,8 @@
 package org.breskul.testdata.entity;
 
-import org.breskul.connectivity.annotation.Column;
-import org.breskul.connectivity.annotation.Id;
-import org.breskul.connectivity.annotation.Table;
+import org.breskul.annotation.Column;
+import org.breskul.annotation.Id;
+import org.breskul.annotation.Table;
 
 @Table("table_test")
 public class TestEntity {

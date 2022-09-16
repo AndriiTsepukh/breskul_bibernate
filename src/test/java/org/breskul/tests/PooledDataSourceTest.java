@@ -13,16 +13,14 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class PooledDataSourceTest {
-    private static final String url = "jdbc:postgresql://localhost:5432/postgres";
-    private static final String username = "postgres";
+    private static final String url = "jdbc:h2:file:./target/db/testdb";
+    private static final String username = "sa";
     private static final String password = "Abcd1234";
 
     @BeforeEach
     public void setup() {
         PooledDataSource.reset();
     }
-
-    // TODO: modify and extend tests
 
     @Test
     @DisplayName("Connect via provided properties")

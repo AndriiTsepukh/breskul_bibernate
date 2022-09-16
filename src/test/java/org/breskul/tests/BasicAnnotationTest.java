@@ -3,9 +3,9 @@ package org.breskul.tests;
 import org.breskul.pool.PooledDataSource;
 import org.breskul.testdata.entity.Person;
 import org.breskul.testdata.entity.StudentBreskulTeam;
-import org.breskul.connectivity.annotation.Column;
-import org.breskul.connectivity.annotation.Id;
-import org.breskul.connectivity.annotation.Table;
+import org.breskul.annotation.Column;
+import org.breskul.annotation.Id;
+import org.breskul.annotation.Table;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
