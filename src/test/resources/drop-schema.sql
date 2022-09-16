@@ -1,3 +1,4 @@
 DROP SCHEMA IF EXISTS testdb;
 DROP SCHEMA IF EXISTS table_delete_test;
 DROP SCHEMA IF EXISTS table_test;
+DROP SCHEMA IF EXISTS location;

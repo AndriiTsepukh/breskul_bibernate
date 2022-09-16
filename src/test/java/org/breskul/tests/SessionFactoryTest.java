@@ -210,6 +210,29 @@ public class SessionFactoryTest {
         session.flush();
     }
 
+    @Test
+    public void persistActionMultipleFieldTypesTest() {
+        final var pooledDataSource =  PooledDataSource.getInstance(url, username, password, DEFAULT_POOL_SIZE);
+        final var sessionFactory = new SessionFactory(pooledDataSource);
+        final var session = sessionFactory.createSession();
+
+        Location locationEntity = new Location();
+        locationEntity.setAddress("TestFirstName");
+        locationEntity.setRoomsQty(5);
+        locationEntity.setPrice(2_000_000L);
+
+        session.persist(locationEntity);
+        session.flush();
+
+        var id = locationEntity.getId();
+
+        var foundEntity = session.find(Location.class, id);
+
+        assertEquals("TestFirstName", foundEntity.getAddress());
+        assertEquals(5, foundEntity.getRoomsQty());
+        assertEquals(2_000_000L, foundEntity.getPrice());
+    }
+
 
     Student findStudent(Long id) {
         var student = new Student();
