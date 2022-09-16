@@ -20,7 +20,7 @@ public class DeleteAction implements Action {
     private SettingsForSession settings;
 
     @Override
-    public void execute(boolean showSql) {
+    public void execute() {
         String tableName = AnnotationsHelper.getTableName(entity.getClass());
         Long id = AnnotationsHelper.getId(entity);
         String idColumnName = AnnotationsHelper.getIdColumnName(entity.getClass());
@@ -44,11 +44,6 @@ public class DeleteAction implements Action {
 
     @Override
     public ActionPriority getActionPriority() {
-        return ActionPriority.DELETE;
-    }
-
-    @Override
-    public ActionPriority priority() {
         return ActionPriority.DELETE_PRIORITY;
     }
 }

@@ -69,11 +69,6 @@ public class InsertAction implements Action {
 
     @Override
     public ActionPriority getActionPriority() {
-        return ActionPriority.INSERT;
-    }
-
-    @Override
-    public ActionPriority priority() {
         return ActionPriority.INSERT_PRIORITY;
     }
 }

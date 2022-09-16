@@ -71,7 +71,7 @@ public class UpdateAction implements Action {
     }
 
     @Override
-    public ActionPriority priority() {
+    public ActionPriority getActionPriority() {
         return ActionPriority.UPDATE_PRIORITY;
     }
 }
